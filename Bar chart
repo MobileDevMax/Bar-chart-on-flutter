@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Bar Chart',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: BarChartHome(),
+    );
+  }
+}
+
+class BarChartHome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Bar Chart'),
+      ),
+      body: Center(
+        child: BarChartWidget(),
+      ),
+    );
+  }
+}
+
+class BarChartWidget extends StatelessWidget {
+  final List<double> data = [5, 8, 1, 7, 3, 9, 4, 6, 2, 10]; // Column data
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(500, 400), // Chart size
+      painter: BarChartPainter(data),
+    );
+  }
+}
+
+class BarChartPainter extends CustomPainter {
+  final List<double> data;
+  final double maxHeight;
+
+  BarChartPainter(this.data) : maxHeight = data.reduce(max);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    double width = size.width;
+    double height = size.height;
+
+    double barWidth = width / data.length; // Width of each column
+    double scale = height / maxHeight; // Scale for column heights
+
+    Paint paint = Paint();
+
+    // Drawing columns
+    for (int i = 0; i < data.length; i++) {
+      double barHeight = data[i] * scale; // Column height
+      double x = i * barWidth; // X position
+      double y = height - barHeight; // Y position
+
+      paint.color = Colors.blue; // Column color
+      canvas.drawRect(Rect.fromLTWH(x, y, barWidth - 5, barHeight), paint); // Drawing a column
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false; // The graph should not be redrawn
+  }
+}
